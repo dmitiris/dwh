@@ -1,0 +1,279 @@
+{
+    "DBUSER": "DB_USER",
+    "DBWORD": "DB_PASSWORD",
+    "DRIVER": "JDBC DRIVER",
+    "CONN_STR": "JDBC CONNECTION STIRNG",
+    "JDBC_JAR": "JDBC JSR",
+    "FILES": "data",
+    "META_TABLE": {
+        "mode": "meta - DO NOT CHANGE",
+        "source": "oracle - META IS TABLE SHOULD BE IN DATABASE",
+        "prefix": "PREFIX MAY USE MAY BE EMPTY, MAY BE REMOVED",
+        "name": "meta_data",
+        "schema": "DB SCHEMA",
+        "columns": [
+            [
+                "SCHEMA_NAME",
+                "VARCHAR2(30)"
+            ],
+            [
+                "TABLE_NAME",
+                "VARCHAR2(30)"
+            ],
+            [
+                "LAST_UPDATE_DT",
+                "DATE",
+                {
+                    "DEFAULT": "TO_DATE('1900-01-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS')",
+                    "FORMAT": "1900-01-01 00:00:00"
+                }
+            ],
+            [
+                "CONSTRAINT",
+                "PK_PAKS_META_DATA",
+                {
+                    "PRIMARY KEY": "(SCHEMA_NAME, TABLE_NAME)"
+                }
+            ]
+        ]
+    },
+    "TABLES": {
+        "CARDS": {
+            "mode": "scd2",
+            "source": "oracle",
+            "src_schema": "BANK",
+            "stg_schema": "de3at",
+            "trg_schema": "de3at",
+            "src_columns": [
+                [
+                    "card_num",
+                    "char(20)"
+                ],
+                [
+                    "account",
+                    "char(20)"
+                ],
+                [
+                    "create_dt",
+                    "date"
+                ],
+                [
+                    "update_dt",
+                    "date"
+                ]
+            ]
+        },
+        "ACCOUNTS": {
+            "mode": "scd2",
+            "source": "oracle",
+            "src_schema": "BANK",
+            "stg_schema": "de3at",
+            "trg_schema": "de3at",
+            "src_columns": [
+                [
+                    "account",
+                    "char(20)"
+                ],
+                [
+                    "valid_to",
+                    "date"
+                ],
+                [
+                    "client",
+                    "varchar(20)"
+                ],
+                [
+                    "create_dt",
+                    "date"
+                ],
+                [
+                    "update_dt",
+                    "date"
+                ]
+            ]
+        },
+        "CLIENTS": {
+            "mode": "scd2",
+            "source": "oracle",
+            "src_schema": "BANK",
+            "stg_schema": "de3at",
+            "trg_schema": "de3at",
+            "src_columns": [
+                [
+                    "client_id",
+                    "varchar(20)"
+                ],
+                [
+                    "last_name",
+                    "varchar(100)"
+                ],
+                [
+                    "first_name",
+                    "varchar(100)"
+                ],
+                [
+                    "patronymic",
+                    "varchar(100)"
+                ],
+                [
+                    "date_of_birth",
+                    "date"
+                ],
+                [
+                    "passport_num",
+                    "varchar(15)"
+                ],
+                [
+                    "passport_valid_to",
+                    "date"
+                ],
+                [
+                    "phone",
+                    "varchar(20)"
+                ],
+                [
+                    "create_dt",
+                    "date"
+                ],
+                [
+                    "update_dt",
+                    "date"
+                ]
+            ]
+        },
+        "TERMINALS": {
+            "mode": "scd2",
+            "source": "xlsx",
+            "mask": [
+                "terminals_%(date)s.xlsx",
+                "%d%m%Y"
+            ],
+            "stg_schema": "de3at",
+            "trg_schema": "de3at",
+            "src_columns": [
+                [
+                    "TERMINAL_ID",
+                    "char(5)"
+                ],
+                [
+                    "TERMINAL_TYPE",
+                    "char(3)"
+                ],
+                [
+                    "TERMINAL_CITY",
+                    "varchar2(50)"
+                ],
+                [
+                    "TERMINAL_ADDRESS",
+                    "varchar2(200)"
+                ]
+            ]
+        },
+        "TRANSACTIONS": {
+            "mode": "fact",
+            "source": "txt",
+            "mask": [
+                "transactions_%(date)s.txt",
+                "%d%m%Y"
+            ],
+            "stg_schema": "de3at",
+            "trg_schema": "de3at",
+            "src_columns": [
+                [
+                    "TRANSACTION_ID",
+                    "numeric(11)"
+                ],
+                [
+                    "TRANSACTION_DATE",
+                    "date",
+                    {
+                        "FORMAT": "YYYY-MM-DD HH24:MI:SS"
+                    }
+                ],
+                [
+                    "AMOUNT",
+                    "numeric(18,2)"
+                ],
+                [
+                    "CARD_NUM",
+                    "char(20)"
+                ],
+                [
+                    "OPERATION_TYPE",
+                    "varchar2(20)"
+                ],
+                [
+                    "OPERATION_RESULT",
+                    "varchar2(20)"
+                ],
+                [
+                    "TERMINAL_ID",
+                    "char(5)"
+                ]
+            ]
+        },
+        "PASSPORT_BLACKLIST": {
+            "mode": "fact",
+            "source": "xlsx",
+            "mask": [
+                "passport_blacklist_%(date)s.xlsx",
+                "%d%m%Y"
+            ],
+            "stg_schema": "de3at",
+            "trg_schema": "de3at",
+            "src_columns": [
+                [
+                    "PASSPORT_NO",
+                    "varchar2(15)"
+                ],
+                [
+                    "BLOCK_DATE",
+                    "date"
+                ]
+            ],
+            "stg_columns": [
+                [
+                    "PASSPORT_NUM",
+                    "varchar2(15)"
+                ],
+                [
+                    "BLOCK_DATE",
+                    "date"
+                ]
+            ]
+        }
+    },
+    "REPORTS": {
+        "REP_FRAUD": {
+            "mode": "meta",
+            "source": "oracle",
+            "stg_schema": "de3at",
+            "src_columns": [
+                [
+                    "event_dt",
+                    "date"
+                ],
+                [
+                    "passport",
+                    "varchar2(15)"
+                ],
+                [
+                    "fio",
+                    "varchar2(300)"
+                ],
+                [
+                    "phone",
+                    "varchar2(20)"
+                ],
+                [
+                    "event_type",
+                    "varchar2(50)"
+                ],
+                [
+                    "report_dt",
+                    "date"
+                ]
+            ]
+        }
+    }
+}
