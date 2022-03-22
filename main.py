@@ -55,10 +55,16 @@ def main(action, mode, meta, selected_tables):
         if reports:
             reports = {key.upper(): reports[key] for key in reports}
             for report in reports.keys():
-                print(report, reports[report])
                 report = Model(report, reports[report], output=mode)
                 report.init()
                 report.update()
+    if action in {'drop'} and not selected_tables:
+        reports = CONFIG.get('REPORTS')
+        if reports:
+            reports = {key.upper(): reports[key] for key in reports}
+            for report in reports.keys():
+                report = Model(report, reports[report], output=mode)
+                report.drop()
 
 
 if __name__ == '__main__':

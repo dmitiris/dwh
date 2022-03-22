@@ -97,6 +97,13 @@ class Driver:
         return sql_queries
 
     def drop(self):
+        if self.mode == 'report':
+            sql_queries = [self.drop_table('report'), ]
+            if OUTPUT[0]:
+                Connection.executemany(sql_queries, ignore=True)
+            else:
+                print(*sql_queries, sep='\n')
+            return sql_queries
         sql_queries = [self.drop_table('stg'), ]
         if self.mode == 'scd2':
             sql_queries.append(self.drop_table('del'))
