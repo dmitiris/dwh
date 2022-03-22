@@ -1,0 +1,1 @@
+*/10 * * * * python3 /home/de3at/paks/main.py update > /home/de3at/paks/logs/$(date +\%Y\%m\%d_\%H\%M)_update.log 2>&1
