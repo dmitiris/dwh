@@ -108,10 +108,16 @@ class Driver:
         if self.mode == 'scd2':
             sql_queries.append(self.drop_table('del'))
         sql_queries.append(self.drop_table('trg'))
-        Connection.executemany(sql_queries, ignore=True)
+        if OUTPUT[0]:
+            Connection.executemany(sql_queries, ignore=True)
+        else:
+            print(*sql_queries, sep='\n')
         sql_query = self.meta_remove()
         sql_data = (self.stg_schema, self.table_name)
-        Connection.execute(sql_query, sql_data, ignore=True)
+        if OUTPUT[0]:
+            Connection.execute(sql_query, sql_data, ignore=True)
+        else:
+            print(*sql_queries, sep='\n')
         return sql_queries
 
     def create_table(self, layer):
