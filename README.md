@@ -29,8 +29,9 @@
 ##### Positional arguments
     init - generates/executes SQL create DDL, writes initial metadata into meta_table
     drop - generates/executes SQL drop DDL, removes metadata from meta_table
-    update - generates/executes ETL process SQL queries
+    increment - generates/executes ETL process SQL queries
     report - generates/executes SQL queries for report
+    update - generates/executes SQL queries for ETL process and report
 
 ##### Examples:
     ./main.py -tn transactions init
