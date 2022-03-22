@@ -51,7 +51,7 @@ def main(action, mode, meta, selected_tables):
                 table = Model(table_name, tables[table_name], output=mode)
                 if action == 'init':
                     table.init()
-                elif action == 'update':
+                elif action in ('update', 'increment'):
                     table.update()
                 elif action == 'drop':
                     table.drop()
