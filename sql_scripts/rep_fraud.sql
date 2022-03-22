@@ -116,10 +116,10 @@ MERGE INTO DE3AT.PAKS_REP_FRAUD REP USING (
             SELECT TRANSACTION_DATE, CARD_NUM
                 FROM prep
                 WHERE 1=1
-                    AND OT = 'WITHDRAW'
-                    AND OT = OT1
-                    AND OT = OT2
-                    AND OT = OT3
+                    AND OT IN ('WITHDRAW', 'PAYMENT')
+                    AND OT1 IN ('WITHDRAW', 'PAYMENT')
+                    AND OT2 IN ('WITHDRAW', 'PAYMENT')
+                    AND OT3 IN ('WITHDRAW', 'PAYMENT')
                     AND OP = 'SUCCESS'
                     AND OP1 = 'REJECT'
                     AND OP1 = OP2
