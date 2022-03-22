@@ -16,6 +16,13 @@ def main(action, mode, meta, selected_tables):
                 path.join(getcwd(), '_data_backup', fname),
                 path.join(getcwd(), FILES_SOURCE_DIR, fname),
             )
+    if action in {'drop'} and not selected_tables:
+        reports = CONFIG.get('REPORTS')
+        if reports:
+            reports = {key.upper(): reports[key] for key in reports}
+            for report in reports.keys():
+                report = Model(report, reports[report], output=mode)
+                report.drop()
     if action not in {'report', }:
         # Meta table
         if meta and action == 'drop':
@@ -58,13 +65,6 @@ def main(action, mode, meta, selected_tables):
                 report = Model(report, reports[report], output=mode)
                 report.init()
                 report.update()
-    if action in {'drop'} and not selected_tables:
-        reports = CONFIG.get('REPORTS')
-        if reports:
-            reports = {key.upper(): reports[key] for key in reports}
-            for report in reports.keys():
-                report = Model(report, reports[report], output=mode)
-                report.drop()
 
 
 if __name__ == '__main__':
