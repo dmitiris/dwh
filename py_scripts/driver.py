@@ -27,6 +27,7 @@ class Driver:
 
     @staticmethod
     def gen_table_name(name, layer, mode, error=False):
+        # TODO: remove hardcoded prefix
         if layer == 'stg':
             table_name = 'PAKS_STG_%s' % name
         elif layer == 'del':
@@ -37,6 +38,8 @@ class Driver:
             table_name = 'PAKS_DWH_DIM_%s_HIST' % name
         elif layer in ('dds', 'trg') and mode == 'fact':
             table_name = 'PAKS_DWH_FACT_%s' % name
+        elif layer == 'report':
+            table_name = 'PAKS_REP_%s' % name
         else:
             raise ValueError('Strange layer and mode: %s and %s' % (layer, mode))
         if len(table_name) > 30 and error:
@@ -70,6 +73,13 @@ class Driver:
         }
 
     def init(self):
+        if self.mode == 'report':
+            sql_queries = [self.create_table('report'), ]
+            if OUTPUT[0]:
+                Connection.executemany(sql_queries, ignore=True)
+            else:
+                print(*sql_queries, sep='\n')
+            return sql_queries
         sql_queries = [self.create_table('stg'), ]
         if self.mode == 'scd2':
             sql_queries.append(self.create_table('del'))
@@ -77,7 +87,6 @@ class Driver:
         if OUTPUT[0]:
             Connection.executemany(sql_queries, ignore=True)
         else:
-
             print(*sql_queries, sep='\n')
         sql_query = self.meta_insert()
         sql_data = (self.stg_schema, self.table_name, '1899-12-31 23:59:59')
@@ -122,9 +131,10 @@ class Driver:
                     }])
                 if 'EFFECTIVE_FROM' not in column_names:
                     columns.append(['DELETED_FLG', 'char(1)'])
+        elif layer == 'report':
+            columns = list(self.stg_columns if self.stg_columns else self.src_columns)
         else:
             raise IOError("Strange mode|layer: %s|%s" % (self.mode, layer))
-
         return CREATE_TABLE_TEMPLATE % {
                 'schema_name': self.stg_schema,
                 'table_name': self.gen_table_name(self.table_name, layer, self.mode),
